@@ -1,0 +1,76 @@
+﻿@page "/cadastrarCandidato"
+@using AppConcurso.Models
+@using AppConcurso.Controllers
+@inject CandidatoController candidatoController
+@inject NavigationManager navigationManager
+
+<h3>Cadastro de Candidato</h3>
+
+<div class="container">
+    <nav class="navbar navbar-light" style="background-color: white"></nav>
+
+    <nav class="navbar navbar-light" style="background-color: darkgreen"></nav>
+
+    <div class="row align-items-start">
+        <div class="col">
+            <div class="mb-3">
+                <label for="nomeCandidato" class="form-label">Nome do Candidato:</label>
+                <input @bind="candidato.NomeCandidato" type="text" class="form-control" id="nomeCandidato">
+            </div>
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <label for="cpf" class="form-label">CPF:</label>
+                <input @bind="candidato.Cpf" type="text" class="form-control" id="cpf">
+            </div>
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <label for="dataNascimento" class="form-label">Data de Nascimento:</label>
+                <input @bind="candidato.DataNascimento" type="date" class="form-control" id="dataNascimento">
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-light" style="background-color: white"></nav>
+
+    <nav class="navbar navbar-light" style="background-color: darkgreen"></nav>
+
+    <nav class="navbar navbar-light" style="background-color: white"></nav>
+
+    @if (enabledButton)
+    {
+        <button type="button" class="btn btn-warning" @onclick="Cancelar">CANCELAR</button>
+        <button type="button" class="btn btn-success" @onclick="Salvar">SALVAR</button>
+    }
+    else
+    {
+        <div class="alert alert-success" role="alert">
+            Cadastro realizado com sucesso!
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="NovoCadastroCandidato">NOVO CADASTRO</button>
+    }
+</div>
+
+@code {
+    private Candidato candidato = new Candidato();
+    private bool enabledButton = true;
+    private async Task Salvar()
+    {
+        await candidatoController.Add(candidato);
+        await candidatoController.Salvar();
+        enabledButton = false;
+        navigationManager.NavigateTo("/cadastrarCandidato");
+
+    }
+
+    private void Cancelar()
+    {
+        navigationManager.NavigateTo("/cadastrarCandidato");
+    }
+
+    public void NovoCadastroCandidato()
+    {
+        navigationManager.NavigateTo("/cadastrarCandidato", forceLoad: true);
+    }
+}

@@ -1,0 +1,77 @@
+﻿@page "/cadastrarCargo"
+@using AppConcurso.Models
+@using AppConcurso.Controllers
+@inject CargoController cargoController
+@inject NavigationManager navigationManager
+
+<h3>Cadastro de Cargo</h3>
+
+<div class="container">
+    <nav class="navbar navbar-light" style="background-color: white"></nav>
+
+    <nav class="navbar navbar-light" style="background-color: darkgreen"></nav>
+
+    <div class="row align-items-start">
+        <div class="col">
+            <div class="mb-3">
+                <label for="nomeCargo" class="form-label">Nome do Cargo:</label>
+                <input @bind="cargo.NomeCargo" type="text" class="form-control" id="nomeCargo">
+            </div>
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <label for="edital" class="form-label">Edital:</label>
+                <input @bind="cargo.Edital" type="text" class="form-control" id="edital">
+            </div>
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <label for="salarioBase" class="form-label">Salário Base:</label>
+                <input @bind="cargo.SalarioBase" type="number" class="form-control" id="salarioBase">
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-light" style="background-color: white"></nav>
+
+    <nav class="navbar navbar-light" style="background-color: darkgreen"></nav>
+
+    <nav class="navbar navbar-light" style="background-color: white"></nav>
+
+    @if (enabledButton)
+    {
+        <button type="button" class="btn btn-warning" @onclick="Cancelar">CANCELAR</button>
+        <button type="button" class="btn btn-success" @onclick="Salvar">SALVAR</button>
+    }
+    else
+    {
+        <div class="alert alert-success" role="alert">
+            Cadastro realizado com sucesso!
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="NovoCadastroCargo">NOVO CADASTRO</button>
+    }
+
+</div>
+
+@code {
+    private bool enabledButton = true;
+    private Cargo cargo = new Cargo();
+
+    private async Task Salvar()
+    {
+        await cargoController.Add(cargo);
+        await cargoController.Salvar();
+        navigationManager.NavigateTo("/cadastrarCargo");
+        enabledButton = false;
+    }
+
+    private void Cancelar()
+    {
+        navigationManager.NavigateTo("/cadastrarCargo");
+    }
+
+    public void NovoCadastroCargo()
+    {
+        navigationManager.NavigateTo("/cadastrarCargo", forceLoad: true);
+    }
+}

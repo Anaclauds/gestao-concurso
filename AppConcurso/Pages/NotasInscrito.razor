@@ -1,0 +1,150 @@
+﻿@page "/notas"
+@using AppConcurso.Models;
+@using AppConcurso.Controllers;
+@inject InscricaoController inscControl;
+@inject CargoController cargoControl;
+@inject NavigationManager navegacao;
+
+<h3>NOTAS DOS CANDIDATOS</h3>
+
+<div class="container">
+    <nav class="navbar navbar-light" style="background-color: white"></nav>
+
+    <nav class="navbar navbar-light" style="background-color: darkgreen"></nav>
+    <label for="veiculo" class="form-label">CARGOS:</label>
+    <select @onchange="SelecionarCargos" class="form-select" aria-label="Selecione um Cargo">
+        <option selected>Selecione um cargo</option>
+        @if (listaCargos != null)
+        {
+            @foreach (var item in listaCargos)
+            {
+                <option value="@item.Id">@item.NomeCargo</option>
+            }
+        }
+    </select>
+
+    <nav class="navbar navbar-light" style="background-color: white"></nav>
+
+    <nav class="navbar navbar-light" style="background-color: darkgreen"></nav>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>NOME</th>
+                <th>NOTA CONH. GERAIS</th>
+                <th>NOTA CONH. ESPECÍFICOS</th>
+                <th>MÉDIA</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (listaInscritos != null)
+            {
+                @foreach (var inscricao in listaInscritos)
+                {
+                    <tr>
+                        <td>@inscricao.Candidato.NomeCandidato</td>
+                        <td><input @bind="@inscricao.NotaConhGerais" type="number" class="form-control"></td>
+                        <td><input @bind="@inscricao.NotaConhEspecificos" type="number" class="form-control"></td>
+                        <td>@CalcularMedia(inscricao)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <nav class="navbar navbar-light" style="background-color: white"></nav>
+
+    <nav class="navbar navbar-light" style="background-color: darkgreen"></nav>
+
+    <nav class="navbar navbar-light" style="background-color: white"></nav>
+    <button type="button" class="btn btn-warning" @onclick="Cancelar">CANCELAR</button>
+    <button type="button" class="btn btn-success" @onclick="Salvar">SALVAR</button>
+</div>
+<br />
+@if (mostrarLista)
+{
+    <h3>Lista Preliminar de Candidatos</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>NOME</th>
+                <th>NOTA CONH. GERAIS</th>
+                <th>NOTA CONH. ESPECÍFICOS</th>
+                <th>MÉDIA</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (listaInscritos != null)
+            {
+                @foreach (var inscricao in listaInscritos)
+                {
+                    <tr>
+                        <td>@inscricao.Candidato.NomeCandidato</td>
+                        <td>@inscricao.NotaConhGerais</td>
+                        <td>@inscricao.NotaConhEspecificos</td>
+                        <td>@CalcularMedia(inscricao)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+
+@if (exibirMensagem)
+{
+    <div class="alert alert-success" role="alert">
+        Notas salvas com sucesso!
+    </div>
+}
+
+@code {
+    List<Inscricao> listaInscritos;
+    List<Cargo> listaCargos;
+    bool mostrarLista = false;
+    bool exibirMensagem = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        listaCargos = await cargoControl.ListaCargos();
+    }
+
+    async Task SelecionarCargos(ChangeEventArgs e)
+    {
+        if (e.Value != null && !string.IsNullOrWhiteSpace(e.Value.ToString()))
+        {
+            int idCargo = int.Parse(e.Value.ToString());
+            listaInscritos = await inscControl.ListaInscricoesPorCargo(idCargo);
+            mostrarLista = true;
+        }
+        else
+        {
+            mostrarLista = false;
+        }
+    }
+
+    void Cancelar()
+    {
+        navegacao.NavigateTo("/notas", forceLoad: true);
+    }
+
+    async Task Salvar()
+    {
+        // Salvar as notas dos candidatos no banco de dados
+        foreach (var inscricao in listaInscritos)
+        {
+            await inscControl.AtualizarInscricao(inscricao);
+        }
+
+        // Atualizar a lista de inscrições após salvar as notas
+        await SelecionarCargos(new ChangeEventArgs { Value = listaCargos.FirstOrDefault()?.Id });
+
+        // Exibir mensagem de sucesso
+        exibirMensagem = true;
+    }
+
+    decimal CalcularMedia(Inscricao inscricao)
+    {
+        decimal notaConhGerais = inscricao.NotaConhGerais ?? 0;
+        decimal notaConhEspecificos = inscricao.NotaConhEspecificos ?? 0;
+        return (notaConhGerais + notaConhEspecificos) / 2;
+    }
+}
