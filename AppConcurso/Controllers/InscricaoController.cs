@@ -2,6 +2,9 @@
 using AppConcurso.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AppConcurso.Controllers
 {
@@ -16,47 +19,23 @@ namespace AppConcurso.Controllers
 
         public async Task<List<Inscricao>> ListaInscricoes()
         {
-            var inscricoes = await _context.Inscricoes.Include(x => x.Cargo).Include(x => x.Candidato).ToListAsync();
-            return inscricoes;
+            return await _context.Inscricoes.Include(x => x.Candidato).Include(x => x.Concurso).ToListAsync();
         }
 
-        public async Task Add(Inscricao inscricao)
+        public async Task<ActionResult> Add(Inscricao inscricao)
         {
-            await _context.Inscricoes.AddAsync(inscricao);
-        }
-
-        public async Task UpdateRange(List<Inscricao> inscricoes)
-        {
-            _context.Inscricoes.UpdateRange(inscricoes);
-        }
-
-        public async Task Salvar()
-        {
+            _context.Inscricoes.Add(inscricao);
             await _context.SaveChangesAsync();
+            return Ok(inscricao);
         }
 
-        public async Task<List<Inscricao>> ListaInscricoesPorCargo(int idCargo)
+        public async Task<ActionResult<List<Inscricao>>> ConsultarPorCandidato(int candidatoId)
         {
             var inscricoes = await _context.Inscricoes
-                .Include(i => i.Candidato)
-                .Where(i => i.IdCargo == idCargo)
+                .Where(x => x.IdCandidato == candidatoId)
+                .Include(x => x.Concurso)
                 .ToListAsync();
-            return inscricoes;
+            return Ok(inscricoes);
         }
-        public async Task<ActionResult> AtualizarInscricao(Inscricao inscricao)
-        {
-            try
-            {
-                _context.Inscricoes.Update(inscricao);
-                await _context.SaveChangesAsync();
-                return Ok();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return StatusCode(500, "Erro ao atualizar inscrição.");
-            }
-        }
-
-
     }
 }
