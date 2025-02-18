@@ -10,9 +10,15 @@ namespace AppConcurso.Contexto
 		{ 
 		}
 
-		public DbSet<Cargo> Cargos { get; set; }
 		public DbSet<Candidato> Candidatos { get; set; }
-		public DbSet<Inscricao> Inscricoes { get; set; }
-	}
+		public DbSet<Cidade> Cidades { get; set; }
+		public DbSet<Concurso> Concursos { get; set; }
+        public DbSet<ConcursoDisciplina> ConcursosDisciplinas { get; set; }
+        public DbSet<Disciplina> Disciplinas { get; set; }
+        public DbSet<Endereco> Enderecos { get; set; }
+        public DbSet<Estado> Estados { get; set; }
+        public DbSet<Inscricao> Inscricoes { get; set; }
+        public DbSet<Pontuacao> Pontuacoes { get; set; }
+    }
 }
 
