@@ -7,12 +7,14 @@ namespace AppConcurso.Models
     {
         [Column("id")]
         public int Id { get; set; }
+
         [Column("municipio")]
         public string? Municipio { get; set; }
-        [Column("estadoId")]
-        public int IdEstado { get; set; }
 
-        [ForeignKey("IdEstado")] // informa qual o atributo da classe vai armazenar a FK
-        public Estado? Estado { get; set; } // indica o estado
+        [Column("estadoId")]
+        public int EstadoId { get; set; } // 🔹 Nome ajustado para seguir a convenção do EF
+
+        [ForeignKey("EstadoId")] // 🔹 Ajustado para corresponder ao nome correto
+        public Estado? Estado { get; set; }
     }
 }

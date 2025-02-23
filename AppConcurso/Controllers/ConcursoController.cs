@@ -1,13 +1,12 @@
 ﻿using AppConcurso.Contexto;
 using AppConcurso.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AppConcurso.Controllers
 {
-    public class ConcursoController : Controller
+    public class ConcursoController
     {
         private readonly ContextoBD _context;
 
@@ -16,16 +15,29 @@ namespace AppConcurso.Controllers
             _context = context;
         }
 
-        public async Task<List<Concurso>> ListaConcursos()
+        // Método para obter todos os concursos
+        public async Task<List<Concurso>> ObterTodos()
         {
-            return await _context.Concursos.ToListAsync();
+            return await _context.Concursos.AsNoTracking().ToListAsync();
         }
 
-        public async Task<ActionResult> Add(Concurso concurso)
+        // Método para adicionar um novo concurso
+        public async Task Add(Concurso concurso)
         {
             _context.Concursos.Add(concurso);
             await _context.SaveChangesAsync();
-            return Ok(concurso);
+        }
+
+        // Método para salvar alterações
+        public async Task Salvar()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+        // Método para buscar um concurso pelo ID
+        public async Task<Concurso?> ObterPorId(int id)
+        {
+            return await _context.Concursos.FindAsync(id);
         }
     }
 }

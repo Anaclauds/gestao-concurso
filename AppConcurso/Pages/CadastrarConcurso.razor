@@ -1,10 +1,10 @@
-﻿@page "/cadastrarCargo"
+﻿@page "/cadastrarConcurso"
 @using AppConcurso.Models
 @using AppConcurso.Controllers
-@inject CargoController cargoController
+@inject ConcursoController concursoController
 @inject NavigationManager navigationManager
 
-<h3>Cadastro de Cargo</h3>
+<h3>Cadastro de Concurso</h3>
 
 <div class="container">
     <nav class="navbar navbar-light" style="background-color: white"></nav>
@@ -14,20 +14,14 @@
     <div class="row align-items-start">
         <div class="col">
             <div class="mb-3">
-                <label for="nomeCargo" class="form-label">Nome do Cargo:</label>
-                <input @bind="cargo.NomeCargo" type="text" class="form-control" id="nomeCargo">
-            </div>
-        </div>
-        <div class="col">
-            <div class="mb-3">
                 <label for="edital" class="form-label">Edital:</label>
-                <input @bind="cargo.Edital" type="text" class="form-control" id="edital">
+                <input @bind="concurso.Edital" type="text" class="form-control" id="edital">
             </div>
         </div>
         <div class="col">
             <div class="mb-3">
-                <label for="salarioBase" class="form-label">Salário Base:</label>
-                <input @bind="cargo.SalarioBase" type="number" class="form-control" id="salarioBase">
+                <label for="dataConcurso" class="form-label">Data do Concurso:</label>
+                <input @bind="concurso.DataConcurso" type="date" class="form-control" id="dataConcurso">
             </div>
         </div>
     </div>
@@ -48,30 +42,29 @@
         <div class="alert alert-success" role="alert">
             Cadastro realizado com sucesso!
         </div>
-        <button type="button" class="btn btn-primary" @onclick="NovoCadastroCargo">NOVO CADASTRO</button>
+        <button type="button" class="btn btn-primary" @onclick="NovoCadastroConcurso">NOVO CADASTRO</button>
     }
-
 </div>
 
 @code {
+    private Concurso concurso = new Concurso();
     private bool enabledButton = true;
-    private Cargo cargo = new Cargo();
 
     private async Task Salvar()
     {
-        await cargoController.Add(cargo);
-        await cargoController.Salvar();
-        navigationManager.NavigateTo("/cadastrarCargo");
+        await concursoController.Add(concurso);
+        await concursoController.Salvar();
         enabledButton = false;
+        navigationManager.NavigateTo("/cadastrarConcurso");
     }
 
     private void Cancelar()
     {
-        navigationManager.NavigateTo("/cadastrarCargo");
+        navigationManager.NavigateTo("/cadastrarConcurso");
     }
 
-    public void NovoCadastroCargo()
-    {
-        navigationManager.NavigateTo("/cadastrarCargo", forceLoad: true);
+        public void NovoCadastroConcurso()
+        {
+        navigationManager.NavigateTo("/cadastrarConcurso", forceLoad: true);
     }
 }

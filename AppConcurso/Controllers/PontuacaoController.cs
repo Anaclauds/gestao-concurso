@@ -1,59 +1,59 @@
 ﻿using AppConcurso.Contexto;
 using AppConcurso.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AppConcurso.Controllers
 {
-    public class PontuacaoController : Controller
+    public class PontuacaoController
     {
-        private readonly ContextoBD _context;
+        private readonly ContextoBD _contexto;
 
-        public PontuacaoController(ContextoBD context)
+        public PontuacaoController(ContextoBD contexto)
         {
-            _context = context;
+            _contexto = contexto;
         }
 
-        public async Task<List<Pontuacao>> ListaPontuacoes()
+        // Obtém todas as pontuações cadastradas
+        public async Task<List<Pontuacao>> ObterTodas()
         {
-            return await _context.Pontuacoes.Include(x => x.Inscricao).Include(x => x.ConcursoDisciplina).ToListAsync();
-        }
-
-        public async Task<ActionResult> Add(Pontuacao pontuacao)
-        {
-            _context.Pontuacoes.Add(pontuacao);
-            await _context.SaveChangesAsync();
-            return Ok(pontuacao);
-        }
-
-        public async Task<ActionResult<List<Pontuacao>>> ConsultarNotasCandidato(int candidatoId)
-        {
-            var notas = await _context.Pontuacoes
-                .Include(x => x.ConcursoDisciplina)
-                .Include(x => x.Inscricao)
-                .Where(x => x.Inscricao.IdCandidato == candidatoId)
+            return await _contexto.Pontuacoes
+                .Include(p => p.Inscricao)
+                .Include(p => p.ConcursoDisciplina)
+                .AsNoTracking()
                 .ToListAsync();
-            return Ok(notas);
         }
 
-        public async Task<ActionResult<List<Candidato>>> ListaAprovados()
+        // Obtém uma pontuação específica pelo ID
+        public async Task<Pontuacao> ObterPorId(int id)
         {
-            var aprovados = await _context.Pontuacoes
-                .Include(x => x.Inscricao)
-                .ThenInclude(x => x.Candidato)
-                .GroupBy(x => x.Inscricao.Candidato)
-                .Select(g => new
-                {
-                    Candidato = g.Key,
-                    Media = g.Average(x => x.Nota)
-                })
-                .OrderByDescending(x => x.Media)
-                .ToListAsync();
+            return await _contexto.Pontuacoes
+                .Include(p => p.Inscricao)
+                .Include(p => p.ConcursoDisciplina)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
 
-            return Ok(aprovados);
+        // Adiciona ou atualiza uma pontuação
+        public async Task AdicionarOuAtualizar(Pontuacao pontuacao)
+        {
+            var pontuacaoExistente = await _contexto.Pontuacoes
+                .FirstOrDefaultAsync(p => p.IdInscricao == pontuacao.IdInscricao &&
+                                          p.IdConcursoDisciplina == pontuacao.IdConcursoDisciplina);
+
+            if (pontuacaoExistente == null)
+            {
+                // Se não existir, adiciona a pontuação
+                _contexto.Pontuacoes.Add(pontuacao);
+            }
+            else
+            {
+                // Se já existir, atualiza a nota
+                pontuacaoExistente.Nota = pontuacao.Nota;
+                _contexto.Pontuacoes.Update(pontuacaoExistente);
+            }
+
+            await _contexto.SaveChangesAsync();
         }
     }
 }

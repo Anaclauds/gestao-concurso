@@ -12,10 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
-
+builder.Services.AddScoped<ConcursoController>();
 builder.Services.AddScoped<CandidatoController>();
-builder.Services.AddScoped<CargoController>();
 builder.Services.AddScoped<InscricaoController>();
+builder.Services.AddScoped<ConcursoController>();
+builder.Services.AddScoped<DisciplinaController>();
+builder.Services.AddScoped<ConcursoDisciplinaController>();
+builder.Services.AddScoped<PontuacaoController>();
 
 string mySqlConexao = builder.Configuration.GetConnectionString("BaseConexaoMySql");
 builder.Services.AddDbContextPool<ContextoBD>(options => options.UseMySql(mySqlConexao, ServerVersion.AutoDetect(mySqlConexao)));

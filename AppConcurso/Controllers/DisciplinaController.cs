@@ -1,31 +1,30 @@
 ﻿using AppConcurso.Contexto;
 using AppConcurso.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AppConcurso.Controllers
 {
-    public class DisciplinaController : Controller
+    public class DisciplinaController
     {
-        private readonly ContextoBD _context;
+        private readonly ContextoBD _contexto;
 
-        public DisciplinaController(ContextoBD context)
+        public DisciplinaController(ContextoBD contexto)
         {
-            _context = context;
+            _contexto = contexto;
         }
 
-        public async Task<List<Disciplina>> ListaDisciplinas()
+        public async Task<List<Disciplina>> ObterTodas()
         {
-            return await _context.Disciplinas.ToListAsync();
+            return await _contexto.Disciplinas.AsNoTracking().ToListAsync();
         }
 
-        public async Task<ActionResult> Add(Disciplina disciplina)
+        public async Task<int> Adicionar(Disciplina disciplina)
         {
-            _context.Disciplinas.Add(disciplina);
-            await _context.SaveChangesAsync();
-            return Ok(disciplina);
+            _contexto.Disciplinas.Add(disciplina);
+            await _contexto.SaveChangesAsync();
+            return disciplina.Id; // Retorna o ID gerado para a disciplina
         }
     }
 }

@@ -1,0 +1,92 @@
+﻿@page "/cadastrarDisciplina"
+@using AppConcurso.Models
+@using AppConcurso.Controllers
+@inject DisciplinaController disciplinaController
+@inject ConcursoDisciplinaController concursoDisciplinaController
+@inject ConcursoController concursoController
+@inject NavigationManager navigationManager
+
+<h3>Cadastro de Disciplina</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="mb-3">
+                <label for="nomeDisciplina" class="form-label">Nome da Disciplina:</label>
+                <input @bind="disciplina.Nome" type="text" class="form-control" id="nomeDisciplina">
+            </div>
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <label for="concurso" class="form-label">Concurso:</label>
+                <select @bind="concursoSelecionadoId" class="form-select" id="concurso">
+                    <option value="0">Selecione um Concurso</option>
+                    @foreach (var concurso in concursos)
+                    {
+                        <option value="@concurso.Id">@concurso.Edital</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    @if (enabledButton)
+    {
+        <button type="button" class="btn btn-warning" @onclick="Cancelar">CANCELAR</button>
+        <button type="button" class="btn btn-success" @onclick="Salvar">SALVAR</button>
+    }
+    else
+    {
+        <div class="alert alert-success" role="alert">
+            Cadastro realizado com sucesso!
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="NovoCadastro">NOVO CADASTRO</button>
+    }
+</div>
+
+@code {
+    private Disciplina disciplina = new Disciplina();
+    private List<Concurso> concursos = new List<Concurso>();
+    private int concursoSelecionadoId;
+    private bool enabledButton = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        concursos = await concursoController.ObterTodos() ?? new List<Concurso>();
+    }
+
+    private async Task Salvar()
+    {
+        if (string.IsNullOrWhiteSpace(disciplina.Nome) || concursoSelecionadoId == 0)
+        {
+            return;
+        }
+
+        // Salvar a disciplina e obter o ID gerado
+        int disciplinaId = await disciplinaController.Adicionar(disciplina);
+
+        // Criar a relação entre concurso e disciplina
+        var concursoDisciplina = new ConcursoDisciplina
+            {
+                DisciplinaId = disciplinaId,
+                ConcursoId = concursoSelecionadoId,
+                DataRegistro = DateTime.Now
+            };
+
+        await concursoDisciplinaController.Adicionar(concursoDisciplina);
+
+        enabledButton = false;
+    }
+
+    private void Cancelar()
+    {
+        navigationManager.NavigateTo("/cadastrarDisciplina");
+    }
+
+    public void NovoCadastro()
+    {
+        disciplina = new Disciplina();
+        concursoSelecionadoId = 0;
+        enabledButton = true;
+    }
+}

@@ -2,20 +2,17 @@
 @using AppConcurso.Models
 @using AppConcurso.Controllers
 @inject CandidatoController candidatoController
+@inject ConcursoController concursoController
 @inject NavigationManager navigationManager
 
 <h3>Cadastro de Candidato</h3>
 
 <div class="container">
-    <nav class="navbar navbar-light" style="background-color: white"></nav>
-
-    <nav class="navbar navbar-light" style="background-color: darkgreen"></nav>
-
-    <div class="row align-items-start">
+    <div class="row">
         <div class="col">
             <div class="mb-3">
-                <label for="nomeCandidato" class="form-label">Nome do Candidato:</label>
-                <input @bind="candidato.NomeCandidato" type="text" class="form-control" id="nomeCandidato">
+                <label for="nome" class="form-label">Nome:</label>
+                <input @bind="candidato.Nome" type="text" class="form-control" id="nome">
             </div>
         </div>
         <div class="col">
@@ -24,19 +21,18 @@
                 <input @bind="candidato.Cpf" type="text" class="form-control" id="cpf">
             </div>
         </div>
-        <div class="col">
-            <div class="mb-3">
-                <label for="dataNascimento" class="form-label">Data de Nascimento:</label>
-                <input @bind="candidato.DataNascimento" type="date" class="form-control" id="dataNascimento">
-            </div>
-        </div>
     </div>
 
-    <nav class="navbar navbar-light" style="background-color: white"></nav>
-
-    <nav class="navbar navbar-light" style="background-color: darkgreen"></nav>
-
-    <nav class="navbar navbar-light" style="background-color: white"></nav>
+    <div class="mb-3">
+        <label for="concurso" class="form-label">Concurso:</label>
+        <select @bind="concursoSelecionado" class="form-select">
+            <option value="">Selecione um concurso</option>
+            @foreach (var concurso in concursosDisponiveis)
+            {
+                <option value="@concurso.Id">@concurso.Edital</option>
+            }
+        </select>
+    </div>
 
     @if (enabledButton)
     {
@@ -54,14 +50,24 @@
 
 @code {
     private Candidato candidato = new Candidato();
+    private List<Concurso> concursosDisponiveis = new List<Concurso>();
+    private int concursoSelecionado;
     private bool enabledButton = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        concursosDisponiveis = await concursoController.ObterTodos();
+    }
+
     private async Task Salvar()
     {
-        await candidatoController.Add(candidato);
-        await candidatoController.Salvar();
-        enabledButton = false;
-        navigationManager.NavigateTo("/cadastrarCandidato");
+        if (concursoSelecionado == 0)
+        {
+            return;
+        }
 
+        await candidatoController.CadastrarCandidatoComInscricao(candidato, concursoSelecionado);
+        enabledButton = false;
     }
 
     private void Cancelar()

@@ -7,6 +7,7 @@ namespace AppConcurso.Models
     {
         [Column("id")]
         public int Id { get; set; }
+
         [Column("disciplina")]
         public string? Nome { get; set; }
     }
