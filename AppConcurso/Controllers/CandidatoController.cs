@@ -64,5 +64,15 @@ namespace AppConcurso.Controllers
                 await transaction.RollbackAsync();
             }
         }
+        // Obtém Concursos por Candidatos
+        public async Task<List<Concurso>> ObterConcursosPorCandidato(int candidatoId)
+        {
+            return await _context.Inscricoes
+                .Where(i => i.CandidatoId == candidatoId)
+                .Include(i => i.Concurso)
+                .Select(i => i.Concurso)
+                .ToListAsync();
+        }
+
     }
 }
