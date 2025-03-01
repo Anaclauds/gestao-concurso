@@ -1,0 +1,146 @@
+﻿@page "/cadastrarPontuacao"
+@using AppConcurso.Models
+@using AppConcurso.Controllers
+@inject CandidatoController candidatoController
+@inject PontuacaoController pontuacaoController
+@inject NavigationManager navigationManager
+
+<h3>Lançamento de Notas</h3>
+
+<div class="container">
+    <div class="mb-3">
+        <label for="candidato" class="form-label">Selecione um candidato:</label>
+        <select id="candidato" class="form-control" @bind="CandidatoSelecionado">
+            <option value="">Selecione um candidato</option>
+            @foreach (var candidato in ListaCandidatos)
+            {
+                <option value="@candidato.Id">@candidato.Nome</option>
+            }
+        </select>
+    </div>
+
+    @if (ListaConcursos.Any())
+    {
+        <div class="mb-3">
+            <label for="concurso" class="form-label">Selecione um concurso:</label>
+            <select id="concurso" class="form-control" @bind="ConcursoSelecionado">
+                <option value="">Selecione um concurso</option>
+                @foreach (var concurso in ListaConcursos)
+                {
+                    <option value="@concurso.Id">@concurso.Edital</option>
+                }
+            </select>
+        </div>
+    }
+
+    @if (ListaDisciplinas.Any())
+    {
+        <h4>Notas das Disciplinas</h4>
+        @foreach (var disciplina in ListaDisciplinas)
+        {
+            <div class="mb-3">
+                <label class="form-label">@disciplina.Disciplina.Nome:</label>
+                <input type="number" class="form-control" min="0" max="10"
+                       @bind="disciplinasNotas[disciplina.Id]" />
+            </div>
+        }
+
+        @if (enabledButton)
+        {
+            <button type="button" class="btn btn-success" @onclick="SalvarNotas">Salvar Notas</button>
+        }
+        else
+        {
+            <div class="alert alert-success" role="alert">
+                Notas lançadas com sucesso!
+            </div>
+            <button type="button" class="btn btn-primary" @onclick="NovoLancamento">Novo Lançamento</button>
+        }
+    }
+</div>
+
+@code {
+    private int candidatoId;
+    private int concursoId;
+    private bool enabledButton = true;
+
+    private List<Candidato> ListaCandidatos = new();
+    private List<Concurso> ListaConcursos = new();
+    private List<ConcursoDisciplina> ListaDisciplinas = new();
+    private Dictionary<int, decimal> disciplinasNotas = new();
+
+    private int CandidatoSelecionado
+    {
+        get => candidatoId;
+        set
+        {
+            candidatoId = value;
+            CarregarConcursos();
+        }
+    }
+
+    private int ConcursoSelecionado
+    {
+        get => concursoId;
+        set
+        {
+            concursoId = value;
+            CarregarDisciplinas();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaCandidatos = await candidatoController.ListaCandidatos();
+    }
+
+    private async Task CarregarConcursos()
+    {
+        if (candidatoId > 0)
+        {
+            ListaConcursos = await candidatoController.ObterConcursosPorCandidato(candidatoId);
+            ListaDisciplinas.Clear();
+            StateHasChanged();
+        }
+    }
+
+    private async Task CarregarDisciplinas()
+    {
+        if (concursoId > 0)
+        {
+            ListaDisciplinas = await pontuacaoController.ObterDisciplinasPorConcurso(concursoId);
+            disciplinasNotas = ListaDisciplinas.ToDictionary(d => d.Id, d => 0m);
+            StateHasChanged();
+        }
+    }
+
+    private async Task SalvarNotas()
+    {
+        int idInscricao = await pontuacaoController.ObterInscricaoId(candidatoId, concursoId);
+
+        if (idInscricao == 0)
+        {
+            return;
+        }
+
+        foreach (var disciplina in ListaDisciplinas)
+        {
+            var pontuacao = new Pontuacao
+                {
+                    IdInscricao = idInscricao,
+                    IdConcursoDisciplina = disciplina.Id,
+                    Nota = disciplinasNotas[disciplina.Id]
+                };
+
+            await pontuacaoController.SalvarPontuacao(pontuacao);
+        }
+
+        enabledButton = false;
+        StateHasChanged();
+    }
+
+    public void NovoLancamento()
+    {
+        navigationManager.NavigateTo("/cadastrarPontuacao", forceLoad: true);
+    }
+}

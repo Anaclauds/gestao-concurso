@@ -1,0 +1,76 @@
+﻿@page "/consultarAprovados"
+@using AppConcurso.Models
+@using AppConcurso.Controllers
+@inject ConcursoController concursoController
+@inject PontuacaoController pontuacaoController
+@inject IJSRuntime JS
+
+<h3>Consultar Lista de Aprovados</h3>
+
+<div class="mb-3">
+    <label for="concurso" class="form-label">Selecione um concurso:</label>
+    <select @bind="ConcursoSelecionadoId" class="form-control">
+        <option value="0">-- Selecione --</option>
+        @foreach (var concurso in ListaConcursos)
+        {
+            <option value="@concurso.Id">@concurso.Edital</option>
+        }
+    </select>
+    <button class="btn btn-primary mt-2" @onclick="BuscarAprovados">Buscar Aprovados</button>
+</div>
+
+@if (ListaAprovados.Any())
+{
+    <h4>Lista de Aprovados</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Posição</th>
+                <th>Candidato</th>
+                <th>Média das Notas</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var (candidato, index) in ListaAprovados.Select((c, i) => (c, i + 1)))
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@candidato.Nome</td>
+                    <td>@candidato.Media.ToString("F2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button class="btn btn-success" @onclick="Imprimir">Imprimir Lista</button>
+}
+else if (Buscou && !ListaAprovados.Any())
+{
+    <p class="text-danger">Nenhum aprovado encontrado para este concurso.</p>
+}
+
+@code {
+    private int ConcursoSelecionadoId { get; set; } = 0;
+    private List<Concurso> ListaConcursos = new();
+    private List<AprovadoDTO> ListaAprovados = new();
+    private bool Buscou = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaConcursos = await concursoController.ListarConcursos();
+    }
+
+    private async Task BuscarAprovados()
+    {
+        if (ConcursoSelecionadoId > 0)
+        {
+            ListaAprovados = await pontuacaoController.ObterAprovadosPorConcurso(ConcursoSelecionadoId);
+            Buscou = true;
+        }
+    }
+
+    private void Imprimir()
+    {
+        JS.InvokeVoidAsync("print");
+    }
+}

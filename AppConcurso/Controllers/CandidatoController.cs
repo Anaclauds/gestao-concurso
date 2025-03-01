@@ -15,6 +15,12 @@ namespace AppConcurso.Controllers
             _context = context;
         }
 
+        public async Task<List<Candidato>> ObterTodosCandidatos()
+        {
+            return await _context.Candidatos.OrderBy(c => c.Nome).ToListAsync();
+        }
+
+
         // Lista todos os candidatos cadastrados
         public async Task<List<Candidato>> ListaCandidatos()
         {
@@ -73,6 +79,9 @@ namespace AppConcurso.Controllers
                 .Select(i => i.Concurso)
                 .ToListAsync();
         }
+
+    
+
 
     }
 }

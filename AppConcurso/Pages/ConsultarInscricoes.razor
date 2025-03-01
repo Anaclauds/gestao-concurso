@@ -1,17 +1,17 @@
-﻿@page "/consultarInscricoes"
+﻿@* @page "/consultarInscricoes"
 @using AppConcurso.Models
 @using AppConcurso.Controllers
-@inject CandidatoController candidatoController
+@inject CandidatoController candidatoController *@
 
-<h3>Consultar Inscrições do Candidato</h3>
+@* <h3>Consultar Inscrições do Candidato</h3> *@
 
-<div class="mb-3">
+@* <div class="mb-3">
     <label for="candidatoId" class="form-label">Número de Inscrição:</label>
     <input @bind="candidatoId" type="number" class="form-control" id="candidatoId" />
     <button class="btn btn-primary mt-2" @onclick="BuscarConcursos">Buscar</button>
-</div>
+</div> *@
 
-@if (concursos.Any())
+@* @if (concursos.Any())
 {
     <h4>Concursos Inscritos:</h4>
     <table class="table">
@@ -37,9 +37,9 @@
 else if (buscou && !concursos.Any())
 {
     <p class="text-danger">Nenhuma inscrição encontrada para este candidato.</p>
-}
+} *@
 
-@code {
+@* @code {
     private int candidatoId;
     private List<Concurso> concursos = new();
     private bool buscou = false;
@@ -56,5 +56,77 @@ else if (buscou && !concursos.Any())
    /* private void Imprimir()
          {
          JS.InvokeVoidAsync("print");
-    }*/
+    } */
+} *@
+
+
+    @page "/consultarInscricoes"
+@using AppConcurso.Models
+@using AppConcurso.Controllers
+@inject CandidatoController candidatoController
+@inject InscricaoController inscricaoController
+
+<h3>Consulta de Inscrições</h3>
+
+<div class="container">
+    <div class="mb-3">
+        <label for="candidato" class="form-label">Selecione um candidato:</label>
+        <select id="candidato" class="form-control" @bind="CandidatoSelecionado">
+            <option value="">Selecione um candidato</option>
+            @foreach (var candidato in ListaCandidatos)
+            {
+                <option value="@candidato.Id">@candidato.Nome</option>
+            }
+        </select>
+    </div>
+
+    @if (ListaConcursos.Any())
+    {
+        <h4>Concursos em que o candidato está inscrito:</h4>
+        <ul class="list-group">
+            @foreach (var concurso in ListaConcursos)
+            {
+                <li class="list-group-item">@concurso.Edital - @concurso.DataConcurso?.ToString("dd/MM/yyyy")</li>
+            }
+        </ul>
+
+        <button type="button" class="btn btn-primary mt-3" @onclick="ImprimirLista">Imprimir Lista</button>
+    }
+</div>
+
+@code {
+    private int candidatoId;
+    private List<Candidato> ListaCandidatos = new();
+    private List<Concurso> ListaConcursos = new();
+
+    private int CandidatoSelecionado
+    {
+        get => candidatoId;
+        set
+        {
+            candidatoId = value;
+            CarregarInscricoes();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaCandidatos = await candidatoController.ListaCandidatos();
+    }
+
+    private async Task CarregarInscricoes()
+    {
+        if (candidatoId > 0)
+        {
+            ListaConcursos = await inscricaoController.ObterConcursosPorCandidato(candidatoId);
+            StateHasChanged();
+        }
+    }
+
+    private void ImprimirLista()
+    {
+        JS.InvokeVoidAsync("print");
+    }
+
+    [Inject] private IJSRuntime JS { get; set; }
 }

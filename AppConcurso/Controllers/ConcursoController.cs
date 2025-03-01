@@ -33,6 +33,14 @@ namespace AppConcurso.Controllers
         {
             await _context.SaveChangesAsync();
         }
+        // Método para listar todos os concursos (para preencher a ComboBox, por exemplo)
+        public async Task<List<Concurso>> ListarConcursos()
+        {
+            return await _context.Concursos
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
 
         // Método para buscar um concurso pelo ID
         public async Task<Concurso?> ObterPorId(int id)

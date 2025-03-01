@@ -1,0 +1,68 @@
+﻿@page "/consultarNotas"
+@using AppConcurso.Models
+@using AppConcurso.Controllers
+@inject CandidatoController candidatoController
+@inject PontuacaoController pontuacaoController
+
+<h3>Consultar Notas do Candidato</h3>
+
+<div class="mb-3">
+    <label for="candidatoId" class="form-label">Selecione o Candidato:</label>
+    <select @bind="CandidatoSelecionadoId" class="form-control">
+        <option value="0">-- Selecione --</option>
+        @foreach (var candidato in ListaCandidatos)
+        {
+            <option value="@candidato.Id">@candidato.Nome (@candidato.Cpf)</option>
+        }
+    </select>
+    <button class="btn btn-primary mt-2" @onclick="BuscarNotas">Buscar Notas</button>
+</div>
+
+@if (NotasCandidato.Any())
+{
+    <h4>Notas do Candidato</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Concurso</th>
+                <th>Disciplina</th>
+                <th>Nota</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var nota in NotasCandidato)
+            {
+                <tr>
+                    <td>@nota.Inscricao?.Concurso?.Edital</td>
+                    <td>@nota.ConcursoDisciplina?.Disciplina?.Nome</td>
+                    <td>@nota.Nota</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (Buscou && !NotasCandidato.Any())
+{
+    <p class="text-danger">Nenhuma nota encontrada para este candidato.</p>
+}
+
+@code {
+    private int CandidatoSelecionadoId;
+    private List<Candidato> ListaCandidatos = new();
+    private List<Pontuacao> NotasCandidato = new();
+    private bool Buscou = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaCandidatos = await candidatoController.ObterTodosCandidatos();
+    }
+
+    private async Task BuscarNotas()
+    {
+        if (CandidatoSelecionadoId > 0)
+        {
+            NotasCandidato = await pontuacaoController.ObterNotasPorCandidato(CandidatoSelecionadoId);
+            Buscou = true;
+        }
+    }
+}
