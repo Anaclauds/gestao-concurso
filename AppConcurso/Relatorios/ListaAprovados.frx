@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="02/03/2025 14:00:00" ReportInfo.Modified="03/02/2025 14:32:49" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="02/03/2025 14:00:00" ReportInfo.Modified="03/02/2025 17:28:20" ReportInfo.CreatorVersion="2024.1.0.0">
   <Dictionary>
     <BusinessObjectDataSource Name="Aprovados" ReferenceName="Aprovados" DataType="System.String" Enabled="true">
       <Column Name="Posicao" DataType="System.Int32"/>
@@ -8,24 +8,24 @@
       <Column Name="ConcursoEdital" DataType="System.String"/>
     </BusinessObjectDataSource>
   </Dictionary>
-  <ReportPage Name="Page1" Guides="699.3,699.3,699.3,699.3,18.9" Watermark.Font="Arial, 60pt">
+  <ReportPage Name="Page1" Guides="699.3,699.3,699.3,699.3,699.3,699.3,699.3,699.3" Watermark.Font="Arial, 60pt">
     <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="67.8">
       <TextObject Name="Title" Left="152.75" Top="18.9" Width="413.4" Height="37.8" Text="RELATÓRIO DE APROVADOS" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 20pt, style=Bold"/>
     </ReportTitleBand>
     <PageHeaderBand Name="PageHeader1" Top="71.8" Width="718.2" Height="30">
-      <TextObject Name="HeaderPosicao" Left="47.25" Width="132.3" Height="30" Border.Lines="All" Fill.Color="LightGray" Text="Posição" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 10pt, style=Bold"/>
-      <TextObject Name="HeaderNome" Left="177.65" Width="183.85" Height="30" Border.Lines="All" Fill.Color="LightGray" Text="Nome" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 12pt, style=Bold"/>
-      <TextObject Name="HeaderMedia" Left="361.5" Width="118.9" Height="30" Border.Lines="All" Fill.Color="LightGray" Text="Média" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 10pt, style=Bold"/>
-      <TextObject Name="HeaderEdital" Left="480.4" Width="190.55" Height="30" Border.Lines="All" Fill.Color="LightGray" Text="Edital" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 10pt, style=Bold"/>
+      <TextObject Name="HeaderPosicao" Width="141.75" Height="30" Border.Lines="All" Fill.Color="LightGray" Text="Posição" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 10pt, style=Bold"/>
+      <TextObject Name="HeaderNome" Left="139.85" Width="259.45" Height="30" Border.Lines="All" Fill.Color="LightGray" Text="Nome" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 12pt, style=Bold"/>
+      <TextObject Name="HeaderMedia" Left="399.3" Width="137.8" Height="30" Border.Lines="All" Fill.Color="LightGray" Text="Média" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 10pt, style=Bold"/>
+      <TextObject Name="HeaderEdital" Left="537.1" Width="181.1" Height="30" Border.Lines="All" Fill.Color="LightGray" Text="Edital" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 10pt, style=Bold"/>
     </PageHeaderBand>
     <DataBand Name="Data1" Top="105.8" Width="718.2" Height="30" Border.Lines="Top" CanBreak="true" DataSource="Aprovados">
-      <TextObject Name="DataPosicao" Left="47.25" Width="132.3" Height="30" Border.Lines="All" Text="[Aprovados.Posicao]" Padding="0, 0, 0, 0" VertAlign="Center" Font="Times New Roman, 10pt"/>
-      <TextObject Name="DataNome" Left="177.65" Width="183.85" Height="30" Border.Lines="All" Text="[Aprovados.NomeCandidato]" Padding="0, 0, 0, 0" VertAlign="Center" Font="Times New Roman, 10pt"/>
-      <TextObject Name="DataMedia" Left="361.5" Width="118.9" Height="30" Border.Lines="All" Text="[Aprovados.Media]" Padding="0, 0, 0, 0" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" VertAlign="Center" Font="Times New Roman, 10pt"/>
-      <TextObject Name="DataEdital" Left="480.4" Width="190.55" Height="30" Border.Lines="All" Text="[Aprovados.EditalConcurso]" Padding="0, 0, 0, 0" VertAlign="Center" Font="Times New Roman, 10pt"/>
+      <TextObject Name="DataPosicao" Width="139.86" Height="30" Border.Lines="All" Text="[Aprovados.Posicao]" Padding="0, 0, 0, 0" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 10pt"/>
+      <TextObject Name="DataNome" Left="139.85" Width="259.45" Height="30" Border.Lines="All" Text="[Aprovados.NomeCandidato]" Padding="0, 0, 0, 0" VertAlign="Center" Font="Times New Roman, 10pt"/>
+      <TextObject Name="DataMedia" Left="399.3" Width="137.8" Height="30" Border.Lines="All" Text="[Aprovados.Media]" Padding="0, 0, 0, 0" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 10pt"/>
+      <TextObject Name="DataEdital" Left="537.1" Width="181.1" Height="30" Border.Lines="All" Text="[Aprovados.EditalConcurso]" Padding="0, 0, 0, 0" VertAlign="Center" Font="Times New Roman, 10pt"/>
     </DataBand>
     <PageFooterBand Name="PageFooter1" Top="139.8" Width="718.2" Height="30">
-      <TextObject Name="FooterText" Left="18.9" Width="281.1" Height="30" Text="Relatório gerado em [Date]" VertAlign="Center" Font="Times New Roman, 8pt, style=Italic"/>
+      <TextObject Name="FooterText" Width="281.1" Height="30" Text="Relatório gerado em [Date]" VertAlign="Center" Font="Times New Roman, 8pt, style=Italic"/>
     </PageFooterBand>
   </ReportPage>
 </Report>
