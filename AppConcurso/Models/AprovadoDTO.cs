@@ -1,4 +1,6 @@
-﻿namespace AppConcurso.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AppConcurso.Models
 {
     public class AprovadoDTO
     {

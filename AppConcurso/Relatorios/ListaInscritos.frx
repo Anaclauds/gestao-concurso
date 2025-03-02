@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="02/03/2025 12:00:00" ReportInfo.Modified="03/02/2025 13:45:11" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <BusinessObjectDataSource Name="Candidatos" ReferenceName="Candidatos" DataType="System.String" Enabled="true">
+      <Column Name="NomeCandidato" DataType="System.String"/>
+      <Column Name="CpfCandidato" DataType="System.String"/>
+      <Column Name="EditalConcurso" DataType="System.String"/>
+      <Column Name="DataConcurso" DataType="System.DateTime"/>
+    </BusinessObjectDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1" Guides="699.3,699.3,699.3,699.3,18.9" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="66.15">
+      <TextObject Name="Title" Left="152.75" Top="18.9" Width="413.4" Height="37.8" Text="RELATÓRIO DE INSCRITOS" HorzAlign="Center" Font="Times New Roman, 20pt, style=Bold"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="70.15" Width="718.2" Height="30">
+      <TextObject Name="HeaderData" Left="532.05" Width="167.25" Height="30" Border.Lines="All" Fill.Color="LightGray" Text="Data do Concurso" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 10pt, style=Bold"/>
+      <TextObject Name="HeaderNome" Left="18.65" Width="178.35" Height="30" Border.Lines="All" Fill.Color="LightGray" Text="Nome" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 12pt, style=Bold"/>
+      <TextObject Name="HeaderCPF" Left="197" Width="166.15" Height="30" Border.Lines="All" Fill.Color="LightGray" Text="CPF" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 10pt, style=Bold"/>
+      <TextObject Name="HeaderEdital" Left="363.15" Width="168.9" Height="30" Border.Lines="All" Fill.Color="LightGray" Text="Edital" HorzAlign="Center" VertAlign="Center" Font="Times New Roman, 10pt, style=Bold"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="104.15" Width="718.2" Height="30" Border.Lines="Top" CanBreak="true" DataSource="Candidatos">
+      <TextObject Name="DataNome" Left="18.65" Width="178.35" Height="30" Border.Lines="All" Text="[Candidatos.NomeCandidato]" Padding="0, 0, 0, 0" VertAlign="Center" Font="Times New Roman, 10pt"/>
+      <TextObject Name="DataCPF" Left="197" Width="166.15" Height="30" Border.Lines="All" Text="[Candidatos.CpfCandidato]" Padding="0, 0, 0, 0" VertAlign="Center" Font="Times New Roman, 10pt"/>
+      <TextObject Name="DataEdital" Left="363.15" Width="168.9" Height="30" Border.Lines="All" Text="[Candidatos.EditalConcurso]" Padding="0, 0, 0, 0" VertAlign="Center" Font="Times New Roman, 10pt"/>
+      <TextObject Name="DataData" Left="532.05" Width="167.25" Height="30" Border.Lines="All" Text="[Candidatos.DataConcurso]" Padding="0, 0, 0, 0" Format="Date" Format.Format="dd/MM/yyyy" VertAlign="Center" Font="Times New Roman, 10pt"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="138.15" Width="718.2" Height="30">
+      <TextObject Name="FooterText" Left="18.9" Width="300" Height="30" Text="Relatório gerado em [Date]" VertAlign="Center" Font="Times New Roman, 8pt, style=Italic"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

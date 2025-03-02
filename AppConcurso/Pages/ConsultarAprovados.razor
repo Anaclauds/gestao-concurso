@@ -1,9 +1,10 @@
 ﻿@page "/consultarAprovados"
 @using AppConcurso.Models
 @using AppConcurso.Controllers
+@using AppConcurso.Utilitarios
 @inject ConcursoController concursoController
 @inject PontuacaoController pontuacaoController
-@inject IJSRuntime JS
+@inject NavigationManager Navigation
 
 <h3>Consultar Lista de Aprovados</h3>
 
@@ -42,7 +43,7 @@
         </tbody>
     </table>
 
-    <button class="btn btn-success" @onclick="Imprimir">Imprimir Lista</button>
+    <button class="btn btn-success" @onclick="GerarRelatorioAprovados">Imprimir Lista de Aprovados</button>
 }
 else if (Buscou && !ListaAprovados.Any())
 {
@@ -69,8 +70,21 @@ else if (Buscou && !ListaAprovados.Any())
         }
     }
 
-    private void Imprimir()
+    private async Task GerarRelatorioAprovados()
     {
-        JS.InvokeVoidAsync("print");
+        try
+        {
+            // Obtem os dados do relatório
+            var listaAprovados = await pontuacaoController.ObterRelatorioAprovados(ConcursoSelecionadoId);
+
+            // Gera o relatório
+            var impressora = new Impressora();
+            await impressora.GerarRelatorioAprovados(listaAprovados, Navigation);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: " + ex.Message);
+        }
     }
+
 }

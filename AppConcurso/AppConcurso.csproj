@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -8,9 +8,21 @@
 
   <ItemGroup>
     <Compile Remove="Imagens\**" />
+    <Compile Remove="Services\**" />
     <Content Remove="Imagens\**" />
+    <Content Remove="Services\**" />
     <EmbeddedResource Remove="Imagens\**" />
+    <EmbeddedResource Remove="Services\**" />
     <None Remove="Imagens\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\RelatorioInscricao.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Relatorios\ListaInscritos.frx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,7 +31,12 @@
 
   <ItemGroup>
     <PackageReference Include="FastReport.OpenSource" Version="2025.1.0" />
+    <PackageReference Include="FastReport.OpenSource.Export.PdfSimple" Version="2025.1.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Relatorios\" />
   </ItemGroup>
 
 </Project>

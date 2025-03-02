@@ -32,5 +32,21 @@ namespace AppConcurso.Controllers
                 .Select(i => i.Concurso)
                 .ToListAsync();
         }
+
+        public async Task<List<RelatorioCandidato>> ObterDadosRelatorio()
+        {
+            return await _context.Inscricoes
+                .Include(i => i.Candidato)
+                .Include(i => i.Concurso)
+                .Select(i => new RelatorioCandidato
+                {
+                    NomeCandidato = i.Candidato.Nome,
+                    CpfCandidato = i.Candidato.Cpf,
+                    EditalConcurso = i.Concurso.Edital,
+                    DataConcurso = i.Concurso.DataConcurso
+                })
+                .ToListAsync();
+        }
+
     }
 }

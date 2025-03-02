@@ -60,11 +60,13 @@ else if (buscou && !concursos.Any())
 } *@
 
 
-    @page "/consultarInscricoes"
+@page "/consultarInscricoes"
 @using AppConcurso.Models
 @using AppConcurso.Controllers
+@using AppConcurso.Utilitarios
 @inject CandidatoController candidatoController
 @inject InscricaoController inscricaoController
+@inject NavigationManager Navigation
 
 <h3>Consulta de Inscrições</h3>
 
@@ -90,7 +92,7 @@ else if (buscou && !concursos.Any())
             }
         </ul>
 
-        <button type="button" class="btn btn-primary mt-3" @onclick="ImprimirLista">Imprimir Lista</button>
+        <button type="button" class="btn btn-primary mt-3" @onclick="GerarRelatorio">Imprimir Lista de Inscritos</button>
     }
 </div>
 
@@ -123,10 +125,20 @@ else if (buscou && !concursos.Any())
         }
     }
 
-    private void ImprimirLista()
+    private async Task GerarRelatorio()
     {
-        JS.InvokeVoidAsync("print");
-    }
+        try
+        {
+            // Obtem os dados do relatório
+            var listaCandidatos = await inscricaoController.ObterDadosRelatorio();
 
-    [Inject] private IJSRuntime JS { get; set; }
+            // Instancia a classe "Impressora" e gera o relatório
+            var impressora = new Impressora();
+            await impressora.GerarRelatorioInscritos(listaCandidatos, Navigation);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: " + ex.Message);
+        }
+    }
 }
