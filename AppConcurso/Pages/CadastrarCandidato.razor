@@ -5,26 +5,26 @@
 @inject ConcursoController concursoController
 @inject NavigationManager navigationManager
 
-<h3>Cadastro de Candidato</h3>
+<h3 class="text-center mt-4 fw-bold">Cadastro de Candidato</h3>
 
-<div class="container">
+<div class="container mt-4">
     <div class="row">
-        <div class="col">
+        <div class="col-md-6">
             <div class="mb-3">
-                <label for="nome" class="form-label">Nome:</label>
-                <input @bind="candidato.Nome" type="text" class="form-control" id="nome">
+                <label for="nome" class="form-label fw-bold">Nome:</label>
+                <input @bind="candidato.Nome" type="text" class="form-control" id="nome" placeholder="Digite o nome completo">
             </div>
         </div>
-        <div class="col">
+        <div class="col-md-6">
             <div class="mb-3">
-                <label for="cpf" class="form-label">CPF:</label>
-                <input @bind="candidato.Cpf" type="text" class="form-control" id="cpf">
+                <label for="cpf" class="form-label fw-bold">CPF:</label>
+                <input @bind="candidato.Cpf" type="text" class="form-control" id="cpf" placeholder="000.000.000-00">
             </div>
         </div>
     </div>
 
     <div class="mb-3">
-        <label for="concurso" class="form-label">Concurso:</label>
+        <label for="concurso" class="form-label fw-bold">Concurso:</label>
         <select @bind="concursoSelecionado" class="form-select">
             <option value="">Selecione um concurso</option>
             @foreach (var concurso in concursosDisponiveis)
@@ -34,18 +34,26 @@
         </select>
     </div>
 
-    @if (enabledButton)
-    {
-        <button type="button" class="btn btn-warning" @onclick="Cancelar">CANCELAR</button>
-        <button type="button" class="btn btn-success" @onclick="Salvar">SALVAR</button>
-    }
-    else
-    {
-        <div class="alert alert-success" role="alert">
-            Cadastro realizado com sucesso!
-        </div>
-        <button type="button" class="btn btn-primary" @onclick="NovoCadastroCandidato">NOVO CADASTRO</button>
-    }
+    <div class="text-center mt-4">
+        @if (enabledButton)
+        {
+            <button type="button" class="btn btn-outline-danger me-2" @onclick="Cancelar">
+                <i class="fas fa-times"></i> CANCELAR
+            </button>
+            <button type="button" class="btn btn-success" @onclick="Salvar">
+                <i class="fas fa-save"></i> SALVAR
+            </button>
+        }
+        else
+        {
+            <div class="alert alert-success text-center" role="alert">
+                <i class="fas fa-check-circle"></i> Cadastro realizado com sucesso!
+            </div>
+            <button type="button" class="btn btn-primary" @onclick="NovoCadastroCandidato">
+                <i class="fas fa-user-plus"></i> NOVO CADASTRO
+            </button>
+        }
+    </div>
 </div>
 
 @code {
@@ -72,8 +80,13 @@
 
     private void Cancelar()
     {
-        navigationManager.NavigateTo("/cadastrarCandidato");
+        candidato = new Candidato(); // Reseta os dados do candidato
+        concursoSelecionado = 0; // Reseta a seleção do concurso
+        enabledButton = true; // Garante que os botões fiquem ativos
+
+        StateHasChanged(); // Atualiza a UI para refletir as mudanças
     }
+
 
     public void NovoCadastroCandidato()
     {

@@ -6,31 +6,53 @@
 @inject InscricaoController inscricaoController
 @inject NavigationManager Navigation
 
-<h3>Consulta de Inscrições</h3>
+<h3 class="text-center mt-4 fw-bold">Consulta de Inscrições</h3>
 
-<div class="container">
-    <div class="mb-3">
-        <label for="candidato" class="form-label">Selecione um candidato:</label>
-        <select id="candidato" class="form-control" @bind="CandidatoSelecionado">
-            <option value="">Selecione um candidato</option>
-            @foreach (var candidato in ListaCandidatos)
-            {
-                <option value="@candidato.Id">@candidato.Nome</option>
-            }
-        </select>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="mb-3">
+                <label for="candidato" class="form-label fw-bold">Selecione um candidato:</label>
+                <select id="candidato" class="form-select" @bind="CandidatoSelecionado">
+                    <option value="0">-- Selecione um candidato --</option>
+                    @foreach (var candidato in ListaCandidatos)
+                    {
+                        <option value="@candidato.Id">@candidato.Nome</option>
+                    }
+                </select>
+            </div>
+        </div>
     </div>
 
     @if (ListaConcursos.Any())
     {
-        <h4>Concursos em que o candidato está inscrito:</h4>
-        <ul class="list-group">
-            @foreach (var concurso in ListaConcursos)
-            {
-                <li class="list-group-item">@concurso.Edital - @concurso.DataConcurso?.ToString("dd/MM/yyyy")</li>
-            }
-        </ul>
+        <h4 class="mt-4 text-center fw-bold">Concursos em que o candidato está inscrito:</h4>
 
-        <button type="button" class="btn btn-primary mt-3" @onclick="GerarRelatorio">Imprimir Lista de Inscritos</button>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <ul class="list-group">
+                    @foreach (var concurso in ListaConcursos)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-file-alt text-primary"></i> @concurso.Edital</span>
+                            <span class="badge bg-secondary">@concurso.DataConcurso?.ToString("dd/MM/yyyy")</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-success" @onclick="GerarRelatorio">
+                <i class="fas fa-print"></i> Imprimir Lista de Inscritos
+            </button>
+        </div>
+    }
+    else if (CandidatoSelecionado > 0 && !ListaConcursos.Any())
+    {
+        <div class="alert alert-warning text-center mt-4" role="alert">
+            <i class="fas fa-exclamation-circle"></i> Nenhuma inscrição encontrada para este candidato.
+        </div>
     }
 </div>
 
@@ -67,10 +89,7 @@
     {
         try
         {
-            // Obtem os dados do relatório
             var listaCandidatos = await inscricaoController.ObterDadosRelatorio();
-
-            // Instancia a classe "Impressora" e gera o relatório
             var impressora = new Impressora();
             await impressora.GerarRelatorioInscritos(listaCandidatos, Navigation);
         }
