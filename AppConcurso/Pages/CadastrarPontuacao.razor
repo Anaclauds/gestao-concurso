@@ -5,57 +5,77 @@
 @inject PontuacaoController pontuacaoController
 @inject NavigationManager navigationManager
 
-<h3>Lançamento de Notas</h3>
+<h3 class="text-center mt-4 fw-bold">Lançamento de Notas</h3>
 
-<div class="container">
-    <div class="mb-3">
-        <label for="candidato" class="form-label">Selecione um candidato:</label>
-        <select id="candidato" class="form-control" @bind="CandidatoSelecionado">
-            <option value="">Selecione um candidato</option>
-            @foreach (var candidato in ListaCandidatos)
-            {
-                <option value="@candidato.Id">@candidato.Nome</option>
-            }
-        </select>
-    </div>
-
-    @if (ListaConcursos.Any())
-    {
-        <div class="mb-3">
-            <label for="concurso" class="form-label">Selecione um concurso:</label>
-            <select id="concurso" class="form-control" @bind="ConcursoSelecionado">
-                <option value="">Selecione um concurso</option>
-                @foreach (var concurso in ListaConcursos)
-                {
-                    <option value="@concurso.Id">@concurso.Edital</option>
-                }
-            </select>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="candidato" class="form-label fw-bold">Selecione um candidato:</label>
+                <select id="candidato" class="form-select" @bind="CandidatoSelecionado">
+                    <option value="">Selecione um candidato</option>
+                    @foreach (var candidato in ListaCandidatos)
+                    {
+                        <option value="@candidato.Id">@candidato.Nome</option>
+                    }
+                </select>
+            </div>
         </div>
-    }
+        <div class="col-md-6">
+            @if (ListaConcursos.Any())
+            {
+                <div class="mb-3">
+                    <label for="concurso" class="form-label fw-bold">Selecione um concurso:</label>
+                    <select id="concurso" class="form-select" @bind="ConcursoSelecionado">
+                        <option value="">Selecione um concurso</option>
+                        @foreach (var concurso in ListaConcursos)
+                        {
+                            <option value="@concurso.Id">@concurso.Edital</option>
+                        }
+                    </select>
+                </div>
+            }
+        </div>
+    </div>
 
     @if (ListaDisciplinas.Any())
     {
-        <h4>Notas das Disciplinas</h4>
-        @foreach (var disciplina in ListaDisciplinas)
-        {
-            <div class="mb-3">
-                <label class="form-label">@disciplina.Disciplina.Nome:</label>
-                <input type="number" class="form-control" min="0" max="10"
-                       @bind="disciplinasNotas[disciplina.Id]" />
-            </div>
-        }
+        <h4 class="mt-4 text-center fw-bold">Notas das Disciplinas</h4>
 
-        @if (enabledButton)
-        {
-            <button type="button" class="btn btn-success" @onclick="SalvarNotas">Salvar Notas</button>
-        }
-        else
-        {
-            <div class="alert alert-success" role="alert">
-                Notas lançadas com sucesso!
-            </div>
-            <button type="button" class="btn btn-primary" @onclick="NovoLancamento">Novo Lançamento</button>
-        }
+        <div class="row">
+            @foreach (var disciplina in ListaDisciplinas)
+            {
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">@disciplina.Disciplina.Nome:</label>
+                        <input type="number" class="form-control" min="0" max="10" step="0.1"
+                               @bind="disciplinasNotas[disciplina.Id]" />
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-4">
+            @if (enabledButton)
+            {
+                <button type="button" class="btn btn-outline-danger me-2" @onclick="Cancelar">
+                    <i class="fas fa-times"></i> CANCELAR
+                </button>
+                <button type="button" class="btn btn-success" @onclick="SalvarNotas"
+                        disabled="@(candidatoId == 0 || concursoId == 0)">
+                    <i class="fas fa-save"></i> SALVAR NOTAS
+                </button>
+            }
+            else
+            {
+                <div class="alert alert-success text-center" role="alert">
+                    <i class="fas fa-check-circle"></i> Notas lançadas com sucesso!
+                </div>
+                <button type="button" class="btn btn-primary" @onclick="NovoLancamento">
+                    <i class="fas fa-folder-plus"></i> NOVO LANÇAMENTO
+                </button>
+            }
+        </div>
     }
 </div>
 
@@ -136,6 +156,18 @@
         }
 
         enabledButton = false;
+        StateHasChanged();
+    }
+
+    private void Cancelar()
+    {
+        candidatoId = 0;
+        concursoId = 0;
+        ListaConcursos.Clear();
+        ListaDisciplinas.Clear();
+        disciplinasNotas.Clear();
+        enabledButton = true;
+
         StateHasChanged();
     }
 

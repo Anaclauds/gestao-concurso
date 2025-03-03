@@ -8,61 +8,74 @@
     <nav class="flex-column">
         <!-- Home -->
         <div class="nav-item px-3">
-            <NavLink class="nav-link d-flex align-items-center" href="/" Match="NavLinkMatch.All" style="color: #fff;">
+            <NavLink class="nav-link d-flex align-items-center menu-item" href="/" Match="NavLinkMatch.All">
                 <span class="bi bi-house-door-fill me-2 icon-adjust" aria-hidden="true"></span> Home
             </NavLink>
         </div>
 
         <!-- Inscrever Candidato -->
         <div class="nav-item px-3">
-            <NavLink class="nav-link d-flex align-items-center" href="/cadastrarCandidato" style="color: #fff;">
+            <NavLink class="nav-link d-flex align-items-center menu-item" href="/cadastrarCandidato">
                 <span class="bi bi-person-plus me-2 icon-adjust" aria-hidden="true"></span> Inscrição de Candidato
             </NavLink>
         </div>
 
         <!-- Cadastrar Concurso -->
         <div class="nav-item px-3">
-            <NavLink class="nav-link d-flex align-items-center" href="/cadastrarConcurso" style="color: #fff;">
+            <NavLink class="nav-link d-flex align-items-center menu-item" href="/cadastrarConcurso">
                 <span class="bi bi-trophy me-2 icon-adjust" aria-hidden="true"></span> Cadastro de Concurso
             </NavLink>
         </div>
 
         <!-- Cadastrar Disciplinas -->
         <div class="nav-item px-3">
-            <NavLink class="nav-link d-flex align-items-center" href="/cadastrarDisciplina" style="color: #fff;">
+            <NavLink class="nav-link d-flex align-items-center menu-item" href="/cadastrarDisciplina">
                 <span class="bi bi-book me-2 icon-adjust" aria-hidden="true"></span> Cadastro de Disciplinas
             </NavLink>
         </div>
 
         <!-- Lançar Notas -->
         <div class="nav-item px-3">
-            <NavLink class="nav-link d-flex align-items-center" href="/cadastrarPontuacao" style="color: #fff;">
+            <NavLink class="nav-link d-flex align-items-center menu-item" href="/cadastrarPontuacao">
                 <span class="bi bi-pencil-square me-2 icon-adjust" aria-hidden="true"></span> Lançamento de Notas
             </NavLink>
         </div>
 
         <!-- Consultar Inscrições -->
         <div class="nav-item px-3">
-            <NavLink class="nav-link d-flex align-items-center" href="/consultarInscricoes" style="color: #fff;">
+            <NavLink class="nav-link d-flex align-items-center menu-item" href="/consultarInscricoes">
                 <span class="bi bi-search me-2 icon-adjust" aria-hidden="true"></span> Consulta de Inscrições
             </NavLink>
         </div>
 
         <!-- Consultar Notas -->
         <div class="nav-item px-3">
-            <NavLink class="nav-link d-flex align-items-center" href="/consultarNotas" style="color: #fff;">
+            <NavLink class="nav-link d-flex align-items-center menu-item" href="/consultarNotas">
                 <span class="bi bi-clipboard-data me-2 icon-adjust" aria-hidden="true"></span> Consulta de Notas
             </NavLink>
         </div>
 
         <!-- Lista de Aprovados -->
         <div class="nav-item px-3">
-            <NavLink class="nav-link d-flex align-items-center" href="/consultarAprovados" style="color: #fff;">
+            <NavLink class="nav-link d-flex align-items-center menu-item" href="/consultarAprovados">
                 <span class="bi bi-award me-2 icon-adjust" aria-hidden="true"></span> Lista de Aprovados
             </NavLink>
         </div>
     </nav>
 </div>
+
+<style>
+    .menu-item {
+        color: #fff !important;
+        border-radius: 5px;
+        transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+        .menu-item:hover {
+            background-color: #218838; /* Um tom de verde mais escuro */
+            box-shadow: 0px 0px 10px rgba(33, 136, 56, 0.7); /* Efeito de brilho ao redor */
+        }
+</style>
 
 @code {
     private bool collapseNavMenu = true;
